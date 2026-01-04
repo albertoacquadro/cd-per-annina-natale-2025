@@ -2,96 +2,195 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CD per Annina – Natale 2025</title>
+
 <style>
-body {
-  font-family: sans-serif;
-  background: #f5f5f5;
-  max-width: 700px;
-  margin: 30px auto;
+:root{
+  --bg:#f5f5f5;
+  --card:#ffffff;
+  --text:#111;
+  --muted:#555;
+  --accent:#007aff;
+  --active:#dff0ff;
+  --btnText:#fff;
+  --shadow: 0 8px 20px rgba(0,0,0,.08);
 }
-h1 { text-align: center; }
-button {
-  padding: 10px 15px;
-  margin: 5px;
-  font-size: 14px;
+
+body.dark{
+  --bg:#0f1115;
+  --card:#171a21;
+  --text:#f1f3f5;
+  --muted:#b7bcc6;
+  --accent:#4aa3ff;
+  --active:#223045;
+  --btnText:#071018;
+  --shadow: 0 10px 24px rgba(0,0,0,.35);
 }
-.track {
-  padding: 8px;
-  background: white;
-  margin-bottom: 5px;
-  border-radius: 6px;
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px 16px 28px;
 }
-.active {
-  background: #dff0ff;
+
+h1{
+  text-align:center;
+  font-size: 1.8rem;
+  margin: 14px 0 14px;
+}
+
+.subtitle{
+  text-align:center;
+  color: var(--muted);
+  margin-bottom: 14px;
+  font-size: 1rem;
+}
+
+.toggles{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin: 10px 0 14px;
+}
+
+.toggle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  font-size: 1rem;
+}
+
+.toggle input{
+  width: 22px;
+  height: 22px;
+}
+
+.controls{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin: 10px 0 14px;
+}
+
+button{
+  flex:1;
+  padding: 16px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: var(--btnText);
+  box-shadow: var(--shadow);
+}
+
+button:active{
+  transform: scale(0.98);
+}
+
+audio{
+  width:100%;
+  margin: 8px 0 16px;
+}
+
+.track{
+  padding: 14px 16px;
+  background: var(--card);
+  margin-bottom: 10px;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.track:active{
+  filter: brightness(0.96);
+}
+
+.active{
+  background: var(--active);
+  font-weight: 800;
+}
+
+.footer{
+  text-align:center;
+  color: var(--muted);
+  margin-top: 14px;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 520px){
+  h1{ font-size: 1.65rem; }
+  button{ font-size: 1.05rem; padding: 18px 0; }
+  .track{ font-size: 1.05rem; padding: 16px; }
 }
 </style>
 </head>
+
 <body>
-
 <h1>🎄 CD per Annina – Natale 2025</h1>
+<div class="subtitle">Anteprima UI (audio disabilitato qui)</div>
 
-<div>
-  <button onclick="playAll()">▶ Play</button>
-  <button onclick="next()">⏭ Next</button>
-  <button onclick="shuffle()">🔀 Shuffle</button>
+<div class="toggles">
+  <label class="toggle">
+    <input id="autoShuffle" type="checkbox" checked>
+    Shuffle automatico
+  </label>
+
+  <label class="toggle">
+    <input id="darkMode" type="checkbox">
+    Modalità dark
+  </label>
+
+  <div class="toggle" style="gap:12px;">
+    <span>Schermo intero</span>
+    <button id="fsBtn" style="flex:0; padding:10px 14px; font-size:1rem; border-radius:12px;">⛶</button>
+  </div>
 </div>
 
-<audio id="player" controls style="width:100%; margin-top:10px;"></audio>
+<div class="controls">
+  <button>▶ Play</button>
+  <button>⏭ Next</button>
+  <button>🔀 Shuffle</button>
+</div>
 
-<div id="playlist"></div>
+<div class="track active">Cesare Cremonini - Ora che non ho più te</div>
+<div class="track">Jovanotti - Fuorionda</div>
+<div class="track">Levante - Dell'amore il fallimento</div>
+<div class="track">Tommaso Paradiso - Lasciamene un po'</div>
+
+<div class="footer">Questa è un’anteprima grafica. Su GitHub Pages l’audio funzionerà.</div>
 
 <script>
-const tracks = [
-  "mp3/Cesare Cremonini - Ora che non ho più te.mp3",
-  "mp3/Cesare Cremonini - Ragazze facili.mp3",
-  "mp3/Cesare Cremonini, Luca Carboni - San Luca.mp3",
-  "mp3/Ernia - PER TE.mp3",
-  "mp3/Geolier - FOTOGRAFIA (Visual Video).mp3",
-  "mp3/Giorgia - GOLPE (Official Video).mp3",
-  "mp3/Jovanotti - Fuorionda.mp3",
-  "mp3/Levante - DELL'AMORE IL FALLIMENTO (Official Video).mp3",
-  "mp3/Olly, Angelina Mango, Juli - Per due come noi (Official Video).mp3",
-  "mp3/Olly, Juli - Questa domenica (Official Video).mp3",
-  "mp3/So solo che la vita (BROOKLYN STUDIO, JOVA SESSION 25).mp3",
-  "mp3/Tommaso Paradiso - Lasciamene un po' (Official Video).mp3",
-  "mp3/eroCaddeo - punto (Visual Video).mp3"
-];
+const darkModeEl = document.getElementById("darkMode");
+const fsBtn = document.getElementById("fsBtn");
 
-let index = 0;
-const player = document.getElementById("player");
-const list = document.getElementById("playlist");
+darkModeEl.addEventListener("change",()=>{
+  document.body.classList.toggle("dark", darkModeEl.checked);
+});
 
-function render() {
-  list.innerHTML = "";
-  tracks.forEach((t,i)=>{
-    const d=document.createElement("div");
-    d.className="track"+(i===index?" active":"");
-    d.textContent=t.replace("mp3/","");
-    d.onclick=()=>play(i);
-    list.appendChild(d);
-  });
-}
-
-function play(i){
-  index=i;
-  player.src=tracks[index];
-  player.play();
-  render();
-}
-
-function playAll(){ play(index); }
-function next(){ index=(index+1)%tracks.length; play(index); }
-
-function shuffle(){
-  tracks.sort(()=>Math.random()-0.5);
-  index=0;
-  play(index);
-}
-
-player.onended = next;
-render();
+fsBtn.addEventListener("click", async ()=>{
+  try{
+    if(!document.fullscreenElement){
+      await document.documentElement.requestFullscreen();
+      fsBtn.textContent = "⤢";
+    } else {
+      await document.exitFullscreen();
+      fsBtn.textContent = "⛶";
+    }
+  }catch(e){}
+});
 </script>
-
 </body>
 </html>
