@@ -3,198 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CD per Annina – Natale 2025</title>
-
+<title>Raccolta CD – Annina</title>
 <style>
 :root{
-  --bg:#f5f5f5; --card:#fff; --text:#111; --muted:#555;
-  --accent:#007aff; --active:#dff0ff; --btnText:#fff;
-  --shadow: 0 8px 20px rgba(0,0,0,.08);
-}
-body.dark{
-  --bg:#0f1115; --card:#171a21; --text:#f1f3f5; --muted:#b7bcc6;
-  --accent:#4aa3ff; --active:#223045; --btnText:#071018;
-  --shadow: 0 10px 24px rgba(0,0,0,.35);
+  --bg:#f5f5f5; --card:#fff; --text:#111; --muted:#555; --accent:#007aff;
+  --shadow: 0 10px 22px rgba(0,0,0,.10);
 }
 body{
   margin:0; font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:var(--bg); color:var(--text);
-  max-width:860px; margin:0 auto; padding:16px 16px 28px;
+  max-width: 860px; margin: 0 auto; padding: 18px 16px 28px;
 }
-h1{ text-align:center; font-size:1.8rem; margin:14px 0 10px; }
-.toggles{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:10px 0 14px; }
-.toggle{ display:flex; align-items:center; gap:10px; background:var(--card); border-radius:14px; padding:10px 12px; box-shadow:var(--shadow); font-size:1rem; }
-.toggle input{ width:22px; height:22px; }
+h1{ text-align:center; margin: 14px 0 8px; font-size: 1.9rem; }
+p{ text-align:center; margin: 0 0 18px; color: var(--muted); }
 
-.controls{ display:flex; gap:12px; justify-content:center; margin:10px 0 14px; }
-button{
-  flex:1; padding:16px 0; font-size:1.1rem; font-weight:700;
-  border-radius:14px; border:none; background:var(--accent); color:var(--btnText);
-  box-shadow:var(--shadow);
+.grid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
-button:active{ transform:scale(0.98); }
-audio{ width:100%; margin:8px 0 10px; }
-
-.notice{
-  text-align:center; color:var(--muted); margin:6px 0 16px; font-size:0.98rem;
+a.card{
+  display:block;
+  background: var(--card);
+  padding: 16px 16px;
+  border-radius: 16px;
+  text-decoration:none;
+  color: inherit;
+  box-shadow: var(--shadow);
 }
+a.card:active{ transform: scale(0.99); }
+.title{ font-weight: 800; font-size: 1.2rem; margin-bottom: 6px; }
+.sub{ color: var(--muted); font-size: 1rem; }
 
-.track{
-  padding:14px 16px; background:var(--card); margin-bottom:10px; border-radius:14px;
-  font-size:1.05rem; line-height:1.25; box-shadow:var(--shadow); cursor:pointer;
-}
-.track:active{ filter:brightness(0.96); }
-.active{ background:var(--active); font-weight:800; }
-
-@media (max-width:520px){
-  h1{ font-size:1.65rem; }
-  button{ font-size:1.05rem; padding:18px 0; }
-  .track{ font-size:1.05rem; padding:16px; }
+@media (min-width: 640px){
+  .grid{ grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
-
 <body>
-<h1>🎄 CD per Annina – Natale 2025</h1>
 
-<div class="toggles">
-  <label class="toggle">
-    <input id="autoShuffle" type="checkbox" checked>
-    Shuffle automatico
-  </label>
+<h1>🎁 Raccolta CD per Annina</h1>
+<p>Scegli un anno (o un CD) e premi play.</p>
 
-  <label class="toggle">
-    <input id="darkMode" type="checkbox">
-    Modalità dark
-  </label>
+<div class="grid">
+  <a class="card" href="./2025/">
+    <div class="title">🎄 CD per Annina – Natale 2025</div>
+    <div class="sub">Playlist 2025 (quella attuale)</div>
+  </a>
 
-  <div class="toggle" style="gap:12px;">
-    <span>Schermo intero</span>
-    <button id="fsBtn" style="flex:0; padding:10px 14px; font-size:1rem; border-radius:12px;">⛶</button>
-  </div>
+  <a class="card" href="./2024/">
+    <div class="title">📀 CD 2024</div>
+    <div class="sub">Pagina pronta (musica da caricare)</div>
+  </a>
 </div>
-
-<div class="controls">
-  <button id="playBtn">▶ Play</button>
-  <button id="nextBtn">⏭ Next</button>
-  <button id="shuffleBtn">🔀 Shuffle</button>
-</div>
-
-<audio id="player" controls preload="metadata"></audio>
-<div id="msg" class="notice">Tocca Play o scegli un brano.</div>
-
-<div id="playlist"></div>
-
-<script>
-const originalTracks = [
-  "mp3/Cesare Cremonini - Ora che non ho più te.mp3",
-  "mp3/Cesare Cremonini - Ragazze facili.mp3",
-  "mp3/Cesare Cremonini, Luca Carboni - San Luca.mp3",
-  "mp3/Ernia - PER TE.mp3",
-  "mp3/Geolier - FOTOGRAFIA (Visual Video).mp3",
-  "mp3/Giorgia - GOLPE (Official Video).mp3",
-  "mp3/Jovanotti - Fuorionda.mp3",
-  "mp3/Levante - DELL'AMORE IL FALLIMENTO (Official Video).mp3",
-  "mp3/Olly, Angelina Mango, Juli - Per due come noi (Official Video).mp3",
-  "mp3/Olly, Juli - Questa domenica (Official Video).mp3",
-  "mp3/So solo che la vita (BROOKLYN STUDIO, JOVA SESSION 25).mp3",
-  "mp3/Tommaso Paradiso - Lasciamene un po' (Official Video).mp3",
-  "mp3/eroCaddeo - punto (Visual Video).mp3"
-];
-
-let tracks = [...originalTracks];
-let index = 0;
-
-const player = document.getElementById("player");
-const list = document.getElementById("playlist");
-const msg = document.getElementById("msg");
-
-const autoShuffleEl = document.getElementById("autoShuffle");
-const darkModeEl = document.getElementById("darkMode");
-const fsBtn = document.getElementById("fsBtn");
-
-document.getElementById("playBtn").onclick = () => play(index);
-document.getElementById("nextBtn").onclick = () => next();
-document.getElementById("shuffleBtn").onclick = () => shuffleManual();
-
-function render() {
-  list.innerHTML = "";
-  tracks.forEach((t,i)=>{
-    const d = document.createElement("div");
-    d.className = "track" + (i===index ? " active" : "");
-    d.textContent = t.replace("mp3/","");
-    d.onclick = () => play(i);
-    list.appendChild(d);
-  });
-}
-
-function play(i){
-  index = i;
-  // encodeURI aiuta con spazi e caratteri
-  const src = encodeURI(tracks[index]);
-  player.src = src;
-  msg.textContent = tracks[index].replace("mp3/","");
-  player.play().catch(() => {
-    // se autoplay policy o altro: l’utente riprova con play sul player
-    msg.textContent = "Premi ▶︎ nel player per avviare (autoplay bloccato dal browser).";
-  });
-  render();
-}
-
-function next(){
-  index = (index + 1) % tracks.length;
-  play(index);
-}
-
-function shuffleArray(arr){
-  const a = [...arr];
-  for(let i=a.length-1; i>0; i--){
-    const j = Math.floor(Math.random() * (i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function shuffleManual(){
-  tracks = shuffleArray(tracks);
-  index = 0;
-  render();
-  msg.textContent = "Shuffle fatto. Premi Play.";
-}
-
-function applyAutoShuffle(){
-  tracks = autoShuffleEl.checked ? shuffleArray(originalTracks) : [...originalTracks];
-  index = 0;
-  render();
-  msg.textContent = autoShuffleEl.checked ? "Shuffle automatico attivo. Premi Play." : "Ordine originale. Premi Play.";
-}
-
-function applyDarkMode(){
-  document.body.classList.toggle("dark", darkModeEl.checked);
-}
-
-async function toggleFullscreen(){
-  try{
-    if(!document.fullscreenElement){
-      await document.documentElement.requestFullscreen();
-      fsBtn.textContent = "⤢";
-    } else {
-      await document.exitFullscreen();
-      fsBtn.textContent = "⛶";
-    }
-  } catch(e){}
-}
-
-autoShuffleEl.addEventListener("change", applyAutoShuffle);
-darkModeEl.addEventListener("change", applyDarkMode);
-fsBtn.addEventListener("click", toggleFullscreen);
-
-player.onended = next;
-player.onerror = () => { msg.textContent = "Errore: file non trovato o non accessibile. Controlla nomi file / percorso."; };
-
-applyAutoShuffle();
-applyDarkMode();
-</script>
 
 </body>
 </html>
