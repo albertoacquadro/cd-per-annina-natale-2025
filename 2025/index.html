@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CD per Annina – Natale 2025</title>
+<title>Natale 2025</title>
 
 <style>
 :root{
@@ -17,75 +17,148 @@ body.dark{
   --shadow: 0 10px 24px rgba(0,0,0,.35);
 }
 body{
-  margin:0; font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  background:var(--bg); color:var(--text);
-  max-width:860px; margin:0 auto; padding:16px 16px 28px;
+  margin:0;
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  max-width:860px;
+  margin:0 auto;
+  padding:16px 16px 28px;
 }
-h1{ text-align:center; font-size:1.8rem; margin:14px 0 10px; }
-.toggles{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:10px 0 14px; }
-.toggle{ display:flex; align-items:center; gap:10px; background:var(--card); border-radius:14px; padding:10px 12px; box-shadow:var(--shadow); font-size:1rem; }
-.toggle input{ width:22px; height:22px; }
+h1{
+  text-align:center;
+  font-size:1.8rem;
+  margin:14px 0 10px;
+}
 
-.controls{ display:flex; gap:12px; justify-content:center; margin:10px 0 14px; }
 button{
-  flex:1; padding:16px 0; font-size:1.1rem; font-weight:700;
-  border-radius:14px; border:none; background:var(--accent); color:var(--btnText);
+  padding:16px;
+  font-size:1.1rem;
+  font-weight:700;
+  border-radius:14px;
+  border:none;
+  background:var(--accent);
+  color:var(--btnText);
   box-shadow:var(--shadow);
 }
 button:active{ transform:scale(0.98); }
-audio{ width:100%; margin:8px 0 10px; }
 
-.notice{
-  text-align:center; color:var(--muted); margin:6px 0 16px; font-size:0.98rem;
+.hidden{ display:none; }
+
+/* Login */
+#login{
+  margin-top:40px;
+  text-align:center;
+}
+#login input{
+  padding:14px;
+  font-size:1.1rem;
+  width:100%;
+  max-width:280px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  margin-bottom:12px;
+}
+
+/* Player UI */
+.controls{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin:10px 0 14px;
+}
+.controls button{
+  flex:1;                 /* bottone largo uguale */
+  min-width: 0;           /* evita overflow su mobile */
 }
 
 .track{
-  padding:14px 16px; background:var(--card); margin-bottom:10px; border-radius:14px;
-  font-size:1.05rem; line-height:1.25; box-shadow:var(--shadow); cursor:pointer;
+  padding:14px 16px;
+  background:var(--card);
+  margin-bottom:10px;
+  border-radius:14px;
+  font-size:1.05rem;
+  box-shadow:var(--shadow);
+  cursor:pointer;
 }
 .track:active{ filter:brightness(0.96); }
+
 .active{ background:var(--active); font-weight:800; }
+
+.notice{
+  text-align:center;
+  color:var(--muted);
+  margin:6px 0 16px;
+  font-size:0.98rem;
+}
+
+audio{ width:100%; margin:8px 0 10px; }
 
 @media (max-width:520px){
   h1{ font-size:1.65rem; }
-  button{ font-size:1.05rem; padding:18px 0; }
-  .track{ font-size:1.05rem; padding:16px; }
+  button{ font-size:1.05rem; padding:18px; }
+  .track{ padding:16px; }
 }
 </style>
 </head>
 
 <body>
-<h1>🎄 CD per Annina – Natale 2025</h1>
 
-<div class="toggles">
-  <label class="toggle">
-    <input id="autoShuffle" type="checkbox" checked>
-    Shuffle automatico
-  </label>
+<!-- LOGIN -->
+<div id="login">
+  <h1>🔒 Natale 2025</h1>
+  <p>Inserisci la password</p>
+  <input id="pwd" type="password" placeholder="Password" autocomplete="off">
+  <br>
+  <button id="enterBtn" onclick="checkPwd()">Entra</button>
+  <p id="err" class="notice"></p>
+</div>
 
-  <label class="toggle">
-    <input id="darkMode" type="checkbox">
-    Modalità dark
-  </label>
+<!-- CONTENUTO -->
+<div id="content" class="hidden">
 
-  <div class="toggle" style="gap:12px;">
-    <span>Schermo intero</span>
-    <button id="fsBtn" style="flex:0; padding:10px 14px; font-size:1rem; border-radius:12px;">⛶</button>
+  <h1>🎄 Natale 2025</h1>
+
+  <p style="text-align:center; margin: 0 0 10px;">
+    <a href="https://albertoacquadro.github.io/music/">← Torna a Music</a>
+  </p>
+
+  <div class="controls">
+    <button id="playBtn">▶ Play</button>
+    <button id="nextBtn">⏭ Next</button>
+    <button id="shuffleBtn">🔀 Shuffle</button>
   </div>
+
+  <audio id="player" controls preload="metadata"></audio>
+  <div id="msg" class="notice">Tocca Play o scegli un brano.</div>
+
+  <div id="playlist"></div>
+
 </div>
-
-<div class="controls">
-  <button id="playBtn">▶ Play</button>
-  <button id="nextBtn">⏭ Next</button>
-  <button id="shuffleBtn">🔀 Shuffle</button>
-</div>
-
-<audio id="player" controls preload="metadata"></audio>
-<div id="msg" class="notice">Tocca Play o scegli un brano.</div>
-
-<div id="playlist"></div>
 
 <script>
+/* -------- PASSWORD -------- */
+const PASSWORD = "2026";
+
+const pwdInput = document.getElementById("pwd");
+pwdInput.focus();
+
+// Enter per entrare
+pwdInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") checkPwd();
+});
+
+function checkPwd(){
+  const v = pwdInput.value;
+  if(v === PASSWORD){
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("content").classList.remove("hidden");
+  } else {
+    document.getElementById("err").textContent = "Password errata";
+  }
+}
+
+/* -------- PLAYER -------- */
 const originalTracks = [
   "mp3/Cesare Cremonini - Ora che non ho più te.mp3",
   "mp3/Cesare Cremonini - Ragazze facili.mp3",
@@ -109,15 +182,11 @@ const player = document.getElementById("player");
 const list = document.getElementById("playlist");
 const msg = document.getElementById("msg");
 
-const autoShuffleEl = document.getElementById("autoShuffle");
-const darkModeEl = document.getElementById("darkMode");
-const fsBtn = document.getElementById("fsBtn");
-
 document.getElementById("playBtn").onclick = () => play(index);
 document.getElementById("nextBtn").onclick = () => next();
 document.getElementById("shuffleBtn").onclick = () => shuffleManual();
 
-function render() {
+function render(){
   list.innerHTML = "";
   tracks.forEach((t,i)=>{
     const d = document.createElement("div");
@@ -130,13 +199,10 @@ function render() {
 
 function play(i){
   index = i;
-  // encodeURI aiuta con spazi e caratteri
-  const src = encodeURI(tracks[index]);
-  player.src = src;
+  player.src = encodeURI(tracks[index]);
   msg.textContent = tracks[index].replace("mp3/","");
   player.play().catch(() => {
-    // se autoplay policy o altro: l’utente riprova con play sul player
-    msg.textContent = "Premi ▶︎ nel player per avviare (autoplay bloccato dal browser).";
+    msg.textContent = "Premi ▶︎ nel player per avviare (blocco autoplay del browser).";
   });
   render();
 }
@@ -146,54 +212,15 @@ function next(){
   play(index);
 }
 
-function shuffleArray(arr){
-  const a = [...arr];
-  for(let i=a.length-1; i>0; i--){
-    const j = Math.floor(Math.random() * (i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function shuffleManual(){
-  tracks = shuffleArray(tracks);
+  tracks = [...tracks].sort(()=>Math.random()-0.5);
   index = 0;
   render();
   msg.textContent = "Shuffle fatto. Premi Play.";
 }
 
-function applyAutoShuffle(){
-  tracks = autoShuffleEl.checked ? shuffleArray(originalTracks) : [...originalTracks];
-  index = 0;
-  render();
-  msg.textContent = autoShuffleEl.checked ? "Shuffle automatico attivo. Premi Play." : "Ordine originale. Premi Play.";
-}
-
-function applyDarkMode(){
-  document.body.classList.toggle("dark", darkModeEl.checked);
-}
-
-async function toggleFullscreen(){
-  try{
-    if(!document.fullscreenElement){
-      await document.documentElement.requestFullscreen();
-      fsBtn.textContent = "⤢";
-    } else {
-      await document.exitFullscreen();
-      fsBtn.textContent = "⛶";
-    }
-  } catch(e){}
-}
-
-autoShuffleEl.addEventListener("change", applyAutoShuffle);
-darkModeEl.addEventListener("change", applyDarkMode);
-fsBtn.addEventListener("click", toggleFullscreen);
-
 player.onended = next;
-player.onerror = () => { msg.textContent = "Errore: file non trovato o non accessibile. Controlla nomi file / percorso."; };
-
-applyAutoShuffle();
-applyDarkMode();
+render();
 </script>
 
 </body>
